@@ -1,4 +1,6 @@
 #First Test
+
+.
 setwd("/Users/christoph_user/Dropbox/SwissBat/Z?rich/Swissbat/5_separate_Einzeldaten")
 setwd("C:/Users/kkr/Dropbox_CT/Dropbox/SwissBat/Z?rich/Swissbat/5_separate_Einzeldaten")
 require(XLConnect)
