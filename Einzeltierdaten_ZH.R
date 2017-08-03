@@ -1,5 +1,6 @@
-setwd("/Users/christoph_user/Dropbox/SwissBat/Zürich/Swissbat/5_separate_Einzeldaten")
-setwd("C:/Users/kkr/Dropbox_CT/Dropbox/SwissBat/Zürich/Swissbat/5_separate_Einzeldaten")
+#First Test
+setwd("/Users/christoph_user/Dropbox/SwissBat/Z?rich/Swissbat/5_separate_Einzeldaten")
+setwd("C:/Users/kkr/Dropbox_CT/Dropbox/SwissBat/Z?rich/Swissbat/5_separate_Einzeldaten")
 require(XLConnect)
 wb_1 <- loadWorkbook("IMPORT_Fledermaus_v1.xls")
 d.d_1 <- readWorksheet(wb_1, 1)
