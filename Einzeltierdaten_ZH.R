@@ -1,37 +1,30 @@
 #First Test
 setwd("/Users/christoph_user/Dropbox/SwissBat/Z?rich/Swissbat/5_separate_Einzeldaten")
-setwd("C:/Users/kkr/Dropbox_CT/Dropbox/SwissBat/Z?rich/Swissbat/5_separate_Einzeldaten")
+setwd("C:/Users/kkr/Dropbox_CT/Dropbox/SwissBat/Zürich/Swissbat/5_separate_Einzeldaten")
 require(XLConnect)
 wb_1 <- loadWorkbook("IMPORT_Fledermaus_v1.xls")
 d.d_1 <- readWorksheet(wb_1, 1)
 head(d.d_1)
 
-#Extrahiere Ortsinformationen
-l.loc <- strsplit(d.d_1$Verbatim.Locality, ", ")
-d.loc <- as.data.frame(do.call(rbind, l.loc))
-names(d.loc) <- c("ortname", "adresszusatz", "Kanton", "Land")
+wb_2 <- loadWorkbook("IMPORT_Fledermaeuse2_v1.xls")
+d.d_2 <- readWorksheet(wb_2, 1)
+head(d.d_2)
 
-#Extrahiere Morphologie
-d.d_1$Col.Obj.Attribut.Remarks <- gsub("/ ", "/", d.d_1$Col.Obj.Attribut.Remarks)
+wb_3 <- loadWorkbook("SammlungStutz.xlsx")
+d.d_3 <- readWorksheet(wb_3, 1)
+head(d.d_3)
 
-l.morph <- strsplit(d.d_1$Col.Obj.Attribut.Remarks, "/")
-d.morph <- as.data.frame(do.call(rbind, l.morph))
-names(d.morph) <- c("Unterarm", "Daumen", "Strahl3", "Strahl5")
-head(d.morph)
+d.m <- merge(d.d_1, d.d_2, by = c("Catalogue.number", "Alt.Cat.Number"), all = TRUE)
+head(d.m)
 
+d.m <- within(d.m, Alt.Cat.Number <- gsub("Colnu ", "", Alt.Cat.Number))
 
-
-d.morph <- within(d.morph, {
-  Unterarm <- gsub("FOREA \\(Unterarmlänge\\), ", "", Unterarm)
-  Daumen <- gsub("Digi1 \\(finger bone 1\\), ", "", Daumen)
-  Strahl3 <- gsub("Digi1 \\(finger bone 3\\), ", "", Strahl3)
-  Strahl5 <- gsub("Digi1 \\(finger bone 5\\), ", "", Strahl5)
-})
+d.m <- merge(d.m, d.d_3, by.x = "Alt.Cat.Number", by.y = "Colnu", all = TRUE)
+d.m <- within(d.m, {
+  SPENU <- paste(Genus.x, Species.x)
+  SPENU2 <- paste(Genus.y, Species.y)
+  })
+head(d.m)
 
 
-d.morph <- within(d.morph, {
-  Unterarm <- as.numeric(Unterarm)
-  Daumen <- as.numeric(Daumen)
-  Strahl3 <- as.numeric(Strahl3)
-  Strahl5 <- as.numeric(Strahl5)
-})
+subset(d.m, Family.x != )
