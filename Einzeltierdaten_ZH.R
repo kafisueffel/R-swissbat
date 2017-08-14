@@ -21,79 +21,62 @@ d.m <- within(d.m, Alt.Cat.Number <- gsub("Colnu ", "", Alt.Cat.Number))
 
 d.m <- merge(d.m, d.d_3, by.x = "Alt.Cat.Number", by.y = "Colnu", all = TRUE)
 
-for(i in 1:3){
-  print(i)
-  print(names(eval(as.name(paste("d.d_",i, sep = "")))))
-}
+head(d.m)
 
 d.m <- within(d.m, {
-  SPENU1 <- paste(Genus.x, Species.x)
-  SPENU2 <- paste(Genus.y, Species.y)
-  
-  SPENU1[SPENU1 == "NA NA"] <- NA
-  SPENU1 <- gsub(" NA$", "", SPENU1)
-  SPENU1 <- gsub("\\s", "", SPENU1)
-  
-  SPENU2[SPENU2 == "NA NA"] <- NA
-  SPENU2 <- gsub(" NA$", "", SPENU2)
-  SPENU2 <- gsub("\\s", "", SPENU2)
-  
-  SPENU3 <- gsub("\\s", "", SPENU)
-  })
+  Col.Obj.Attribut.Remarks.x <- gsub("\\s", "", Col.Obj.Attribut.Remarks.x)
+  Col.Obj.Attribut.Remarks.y <- gsub("\\s", "", Col.Obj.Attribut.Remarks.y)
+})
 
-head(d.m)
-unique(d.m$SPENU1)
-unique(d.m$SPENU2)
-unique(d.m$SPENU3)
+d.morph.d_1 <- as.data.frame(do.call(rbind,strsplit(d.m$Col.Obj.Attribut.Remarks.x, "/")))
+d.morph.d_2 <- as.data.frame(do.call(rbind,strsplit(d.m$Col.Obj.Attribut.Remarks.y, "/")))
+colnames(d.morph.d_1) <- c("FOREA", "Digi1", "Digi3", "Digi5")
+colnames(d.morph.d_2) <- c("Digi1", "Digi3", "Digi5", "FOREA")
+head(d.morph.d_1)
+head(d.morph.d_2)
 
-subset(d.m, is.na(SPENU1) & is.na(SPENU2) & is.na(SPENU3))
+#Überprüfe ob Reihenfolge jeweils korrekt
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_1$FOREA), ",")))[,1])
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_1$Digi1), ",")))[,1])
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_1$Digi3), ",")))[,1])
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_1$Digi5), ",")))[,1])
 
-#überprüfe Artnamen, die möglicherweise falsch sind
-d.nomatch <- subset(d.m, SPENU1 !=  SPENU2 | SPENU1 !=  SPENU3 | SPENU2 !=  SPENU3)
-subset(d.nomatch[,c("SPENU1", "SPENU2", "SPENU3")], is.na(SPENU1))
-subset(d.nomatch[,c("SPENU1", "SPENU2", "SPENU3")], is.na(SPENU2))
-subset(d.nomatch[,c("SPENU1", "SPENU2", "SPENU3")], is.na(SPENU3))
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_2$FOREA), ",")))[,1])
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_2$Digi1), ",")))[,1])
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_2$Digi3), ",")))[,1])
+unique(as.data.frame(do.call(rbind,strsplit(as.character(d.morph.d_2$Digi5), ",")))[,1])
 
 
-#überprüfe Morphologiedaten, die nicht übereinstimmen
-#ungleiche Werte in SammlungStutz.xlsx und IMPORT_Fledermaus_v1.xls
-d.check1 <- subset(d.m, (mapply(grepl, as.character(FOREA), as.character(Col.Obj.Attribut.Remarks.x))==0 |
-                           mapply(grepl, as.character(Digi1), as.character(Col.Obj.Attribut.Remarks.x))==0 |
-                           mapply(grepl, as.character(Digi3), as.character(Col.Obj.Attribut.Remarks.x))==0 |
-                           mapply(grepl, as.character(Digi5), as.character(Col.Obj.Attribut.Remarks.x))==0) &
-                     !is.na(SPENU1) &
-                     !is.na(Col.Obj.Attribut.Remarks.x))
+#ersetze Text
+d.morph.d_1 <- within(d.morph.d_1, {
+  FOREA <- gsub("FOREA\\(Unterarmlänge\\),", "", as.character(FOREA))
+  Digi1 <- gsub("Digi1\\(fingerbone1\\),", "", as.character(Digi1))
+  Digi3 <- gsub("Digi1\\(fingerbone3\\),", "", as.character(Digi3))
+  Digi5 <- gsub("Digi1\\(fingerbone5\\),", "", as.character(Digi5))
+})
 
-#NAs in SammlungStutz.xlsx, aber nicht in IMPORT_Fledermaus_v1.xls
-d.check1 <- rbind(d.check1,subset(d.m, is.na(FOREA) &
-                                    is.na(Digi1) &
-                                    is.na(Digi3) &
-                                    is.na(Digi5) &
-                                    !is.na(Col.Obj.Attribut.Remarks.x) &
-                                    Col.Obj.Attribut.Remarks.x != "FOREA (Unterarmlänge), 0/Digi1 (finger bone 1), 0/ Digi1 (finger bone 3), 0/Digi1 (finger bone 5), 0"))
+d.morph.d_2 <- within(d.morph.d_2, {
+  FOREA <- gsub("FOREA\\(Unterarmlänge\\)", "", as.character(FOREA))
+  Digi1 <- gsub("Digi1\\(fingerbone1\\)", "", as.character(Digi1))
+  Digi3 <- gsub("Digi3\\(fingerbone3\\)", "", as.character(Digi3))
+  Digi5 <- gsub("Digi5\\(fingerbone5\\)", "", as.character(Digi5))
+})
 
 
-#ungleiche Werte in SammlungStutz.xlsx und IMPORT_Fledermaeuse2_v1.xls
-d.check2 <- subset(d.m, (mapply(grepl, as.character(FOREA), as.character(Col.Obj.Attribut.Remarks.y))==0 |
-                           mapply(grepl, as.character(Digi1), as.character(Col.Obj.Attribut.Remarks.y))==0 |
-                           mapply(grepl, as.character(Digi3), as.character(Col.Obj.Attribut.Remarks.y))==0 |
-                           mapply(grepl, as.character(Digi5), as.character(Col.Obj.Attribut.Remarks.y))==0) &
-                     !is.na(SPENU2) &
-                     !is.na(Col.Obj.Attribut.Remarks.y))
+#numerisch
+d.morph.d_1 <- within(d.morph.d_1, {
+  FOREA <- as.numeric(FOREA)
+  Digi1 <- as.numeric(Digi1)
+  Digi3 <- as.numeric(Digi3)
+  Digi5 <- as.numeric(Digi5)
+})
 
-#NAs in SammlungStutz.xlsx, aber nicht in IMPORT_Fledermaeuse2_v1.xls
-d.check2 <- rbind(d.check2, subset(d.m, is.na(FOREA) &
-                                     is.na(Digi1) &
-                                     is.na(Digi3) &
-                                     is.na(Digi5) &
-                                     !is.na(Col.Obj.Attribut.Remarks.y) &
-                                     Col.Obj.Attribut.Remarks.y != "FOREA (Unterarmlänge), 0/Digi1 (finger bone 1), 0/ Digi1 (finger bone 3), 0/Digi1 (finger bone 5), 0"))
+d.morph.d_2 <- within(d.morph.d_2, {
+  FOREA <- as.numeric(FOREA)
+  Digi1 <- as.numeric(Digi1)
+  Digi3 <- as.numeric(Digi3)
+  Digi5 <- as.numeric(Digi5)
+})
 
 
-#Exportiere Resultate in Datenblätter
-setStyleAction(wb_3, XLC$STYLE_ACTION.NONE)
-createSheet(wb_3, "IMPORT_Fledermaus_v1.xls")
-createSheet(wb_3, "IMPORT_Fledermaeuse2_v1.xls")
-writeWorksheet(wb_3, d.check1, "IMPORT_Fledermaus_v1.xls")
-writeWorksheet(wb_3, d.check2, "IMPORT_Fledermaeuse2_v1.xls")
-saveWorkbook(wb_3)
+#füge Datensätze zusammen
