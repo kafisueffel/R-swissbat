@@ -24,6 +24,7 @@ d.m <- merge(d.m, d.d_3, by.x = "Alt.Cat.Number", by.y = "Colnu", all = TRUE)
 head(d.m)
 
 
+#Morphologiedaten
 d.m <- within(d.m, {
   Col.Obj.Attribut.Remarks.x <- gsub("\\s", "", Col.Obj.Attribut.Remarks.x)
   Col.Obj.Attribut.Remarks.y <- gsub("\\s", "", Col.Obj.Attribut.Remarks.y)
@@ -113,3 +114,8 @@ d.m$Digi1[is.na(d.m$Digi1)] <- d.morph.d_1$Digi1[is.na(d.m$Digi1)]
 d.m$Digi3[is.na(d.m$Digi3)] <- d.morph.d_1$Digi3[is.na(d.m$Digi3)]
 d.m$Digi5[is.na(d.m$Digi5)] <- d.morph.d_1$Digi5[is.na(d.m$Digi5)]
 
+
+
+#d.m
+names(d.m)
+head(subset(d.m, count.x>1))
