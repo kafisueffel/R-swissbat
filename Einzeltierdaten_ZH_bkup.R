@@ -80,5 +80,3 @@ d.morph.d_2 <- within(d.morph.d_2, {
 
 
 #füge Datensätze zusammen
-=======
->>>>>>> 334cd187ff386510339a8f285338888798dd39ff
