@@ -22,7 +22,6 @@ d.m <- within(d.m, Alt.Cat.Number <- gsub("Colnu ", "", Alt.Cat.Number))
 d.m <- merge(d.m, d.d_3, by.x = "Alt.Cat.Number", by.y = "Colnu", all = TRUE)
 
 head(d.m)
-<<<<<<< HEAD
 
 d.m <- within(d.m, {
   Col.Obj.Attribut.Remarks.x <- gsub("\\s", "", Col.Obj.Attribut.Remarks.x)
